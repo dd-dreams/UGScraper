@@ -24,10 +24,9 @@ TYPE_CLASS = "_2amQf _2Fdo4"
 
 def get_html(url):
     # using selenium to run javascript scripts
-    profile = FirefoxProfile("/home/fam/.mozilla/firefox/qn4loc7a.default-release")
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options, firefox_profile=profile)
+    driver = webdriver.Firefox(options=options)
     driver.get(url)
     source_code = driver.execute_script(GET_HTML_COMMAND)
     driver.close()
