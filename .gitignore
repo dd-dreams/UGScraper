@@ -1,5 +1,6 @@
 __pycache__
 geckodriver
-geckodriver.log
+*.log
 venv
 .idea
+cached_sites
