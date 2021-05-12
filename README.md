@@ -47,11 +47,11 @@ optional arguments:
 
 or just pass args [still currently in development, only the shell is working].
 
-`-S/--song` is for specifiying which song you want to search for (only when shell=False)[currently in development]. 
+`-S/--song` is for specifiying which song you want to search for (only when shell=False) [in development]. 
 
 `-a/--artist` same as `-S` only for artist [in development].
 
-`-c/--command` is for running series of command, while shell=True, and exists after.
+`-c/--command` is for running series of command, while shell=True, and exists after [in development].
 
 ### Shell = TRUE
 
