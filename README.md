@@ -51,7 +51,6 @@ or just pass args [still currently in development, only the shell is working].
 
 `-a/--artist` same as `-S` only for artist [in development].
 
-`-c/--command` is for running series of command, while shell=True, and exists after [in development].
 
 ### Shell = TRUE
 
