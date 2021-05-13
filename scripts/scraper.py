@@ -3,7 +3,6 @@
 from termcolor import colored
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 import os
 
 YELLOW = "yellow"
@@ -136,7 +135,7 @@ class Chords:
         self.name = name + ".html"
 
     def output_chords(self):
-        path = os.getcwd() + "/cached_sites"
+        path = os.getcwd() + "/../cached_sites"
         if not os.path.exists(path):
             os.makedirs(path)
         chords = self.__soup.find("section", class_=CHORDS_CLASS)
