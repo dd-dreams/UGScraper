@@ -5,9 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 import os
 
-YELLOW = "yellow"
-BLUE = "blue"
-RED = "red"
+
 CLASS = "class"
 GET_HTML_COMMAND = "return document.documentElement.outerHTML"
 SEARCH_URL = "https://www.ultimate-guitar.com/search.php?search_type=title&value="
@@ -123,7 +121,7 @@ class Scraper:
     def print_songs(self):
         songs = " " * 6
         for index, song in enumerate(self.songs):
-            songs += colored(f"[{index}] ", YELLOW) + colored(f"{song[1]}, {song[2]}, {song[3]}\n", RED)
+            songs += colored(f"[{index}] ", 'yellow') + colored(f"{song[1]}, {song[2]}, {song[3]}\n", 'red')
             songs += " " * 6
         return songs
 
