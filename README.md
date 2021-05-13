@@ -45,11 +45,11 @@ optional arguments:
 
 `-s/--shell` is specifying if you want to use the shell provided with the program,
 
-or just pass args [still currently in development, only the shell is working].
+or just pass args.
 
-`-S/--song` is for specifiying which song you want to search for (only when shell=False) [in development]. 
+`-S/--song` is for specifiying which song you want to search for (only when shell=False). 
 
-`-a/--artist` same as `-S` only for artist [in development].
+`-a/--artist` same as `-S` only for artist.
 
 
 ### Shell = TRUE
