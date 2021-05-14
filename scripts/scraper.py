@@ -9,6 +9,7 @@ import os
 CLASS = "class"
 GET_HTML_COMMAND = "return document.documentElement.outerHTML"
 SEARCH_URL = "https://www.ultimate-guitar.com/search.php?search_type=title&value="
+CACHED_SITES = "/../cached_sites/"
 
 
 # class names
@@ -133,7 +134,7 @@ class Chords:
         self.name = name + ".html"
 
     def output_chords(self):
-        path = os.getcwd() + "/../cached_sites"
+        path = os.getcwd() + CACHED_SITES
         if not os.path.exists(path):
             os.makedirs(path)
         chords = self.__soup.find("section", class_=CHORDS_CLASS)

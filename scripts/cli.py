@@ -6,6 +6,7 @@ import sys
 from colorama import init
 import argparse
 import subprocess
+import webbrowser
 
 HOLDER = colored("#>: ", 'red')
 SONG = None
@@ -24,6 +25,7 @@ SUCCESS_SCRAPE = "Successfully scraped"
 SUCCESS_CHORDS = "Successfully outputed chords"
 ALREADY_SCRAPED = "You already scraped this song. Check in cached_sites folder."
 OUTPUTING_MSG = "Outputing chords"
+FILE_NOT_EXIST = "You didn't scrape or output, try again after you did."
 DESCRIPTION = """
 Scrape Ultimate Guitar website with no tracking, fast and easy, and lightweight.
 You can use the shell provided with the program, or parse arguments and get instant results.
@@ -36,6 +38,7 @@ scrape, scrape the website
 options, show current options
 output, output the chords
 bye/exit/quit, exits the program
+open, opens the HTML file after being scraped
 """
 
 # commands
@@ -45,6 +48,7 @@ CLEAR = "clear"
 HELP = "help"
 SCRAPE = "scrape"
 OUTPUT = "output"
+OPEN = "open"
 
 LINK = None
 
@@ -82,6 +86,13 @@ def clear_command():
         subprocess.call("clear")
 
 
+def open_command(path):
+    if os.path.isfile(path):
+        webbrowser.open(path)
+    else:
+        print_status(FILE_NOT_EXIST, ERROR_COLOR)
+
+
 def set_artist_song(song=None, artist=None):
     global SONG, ARTIST
     if song is not None:
@@ -98,7 +109,7 @@ def choose_song(scraper):
 
 def check_in_cache(name):
     name += ".html"
-    path = os.getcwd() + "/../cached_sites"
+    path = os.getcwd() + CACHED_SITES
     file = os.path.join(path, name)
     return os.path.isfile(file)
 
@@ -159,6 +170,16 @@ def output_command(link, name):
         print_status(SUCCESS_CHORDS)
 
 
+def get_path_current_song():
+    """
+    this is a function to get the current path of the current song
+
+    :return: path
+    """
+    path = os.getcwd() + f"{CACHED_SITES}/{SONG}.html"
+    return path
+
+
 def check_command(comm, whatset=None):
     """
     this func will check the command input
@@ -183,6 +204,9 @@ def check_command(comm, whatset=None):
         LINK = scrape_command()
     elif comm == OUTPUT:
         output_command(LINK, SONG)
+    elif comm == OPEN:
+        path = get_path_current_song()
+        open_command(path)
     else:
         print_status("Wrong input", ERROR_COLOR)
 
@@ -197,12 +221,10 @@ def using_args(song, artist):
     if song is None or artist is None:
         print_status("No song or artist provided", ERROR_COLOR)
         sys.exit(0)
-    check_in_cache(song)  # checking if the song is already scraped
     set_artist_song(song, artist)
     link = scrape_command()
-    if not link:
-        sys.exit(0)
-    output_command(link, song)
+    if link:
+        output_command(link, song)
 
 
 if __name__ == '__main__':
@@ -210,11 +232,12 @@ if __name__ == '__main__':
     command = ""
     setvar = None
     parser = argparse.ArgumentParser(description=DESCRIPTION)
-    parser.add_argument('-s', '--shell', help="Spawn a shell", required=True, metavar="True/False")
+    parser.add_argument('-s', '--shell', help="Spawn a shell", action="store_true")
     parser.add_argument('-S', '--song', help="Provide song")
     parser.add_argument('-a', '--artist', help="Provide artist")
+    parser.add_argument('-o', '--open', help="Open HTML file in browser after scraped", action="store_true")
     args = parser.parse_args()
-    if args.shell.lower() == "true":
+    if args.shell:
         try:
             while True:
                 command = input(HOLDER).lower()
@@ -228,3 +251,6 @@ if __name__ == '__main__':
             print("\nbye")
     else:
         using_args(args.song, args.artist)
+        if args.open:
+            path = get_path_current_song()
+            open_command(path)
