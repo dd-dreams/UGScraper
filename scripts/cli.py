@@ -54,9 +54,9 @@ def print_status(text, status=None):
     prints colored texts
     """
     if status is None:
-        print(SUCCESS_COLOR, colored(text, YELLOW))
+        print(SUCCESS_COLOR, colored(text, 'yellow'))
     else:
-        print(ERROR_COLOR, colored(text, YELLOW))
+        print(ERROR_COLOR, colored(text, 'yellow'))
 
 
 def print_options():
