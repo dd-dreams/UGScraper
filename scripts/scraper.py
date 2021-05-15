@@ -2,7 +2,7 @@
 
 from termcolor import colored
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Options, FirefoxProfile
 import os
 
 
@@ -10,6 +10,8 @@ CLASS = "class"
 GET_HTML_COMMAND = "return document.documentElement.outerHTML"
 SEARCH_URL = "https://www.ultimate-guitar.com/search.php?search_type=title&value="
 CACHED_SITES = "/../cached_sites/"
+FIREFOX_PROFILE = "../firefox_profile"
+DRIVER = None
 
 
 # class names
@@ -21,13 +23,19 @@ TYPE_CLASS = "_2amQf _2Fdo4"
 
 
 def get_html(url):
+    global DRIVER
+
     # using selenium to run javascript scripts
     options = Options()
+    if os.path.exists(f"{os.getcwd()}/{FIREFOX_PROFILE}"):  # checking if firefox_profile exists
+        profile = FirefoxProfile(profile_directory=FIREFOX_PROFILE)
+    else:
+        profile = FirefoxProfile()
     options.headless = True
-    driver = webdriver.Firefox(options=options)
-    driver.get(url)
-    source_code = driver.execute_script(GET_HTML_COMMAND)
-    driver.close()
+    if DRIVER is None:
+        DRIVER = webdriver.Firefox(options=options, firefox_profile=profile)
+    DRIVER.get(url)
+    source_code = DRIVER.execute_script(GET_HTML_COMMAND)
     return source_code
 
 

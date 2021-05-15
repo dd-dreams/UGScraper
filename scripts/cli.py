@@ -225,6 +225,8 @@ def using_args(song, artist):
     link = scrape_command()
     if link:
         output_command(link, song)
+    if DRIVER is not None:
+        DRIVER.close()
 
 
 if __name__ == '__main__':
@@ -245,6 +247,7 @@ if __name__ == '__main__':
                     command, setvar = command.split("=")
                 if command == "exit" or command == "quit" or command == "bye":
                     print("bye")
+                    DRIVER.close()
                     break
                 check_command(command, setvar)
         except KeyboardInterrupt:
