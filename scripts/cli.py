@@ -161,7 +161,7 @@ def output_command(link, name):
         print_status("No song to scrape from", ERROR_COLOR)
     elif check_in_cache(name):
         print_status(ALREADY_SCRAPED, ERROR_COLOR)
-        return
+        return False
     else:
         print_status(OUTPUTING_MSG)
         source = get_html(link)
@@ -225,8 +225,9 @@ def using_args(song, artist):
     link = scrape_command()
     if link:
         output_command(link, song)
-    if DRIVER is not None:
-        DRIVER.close()
+    else:
+        return
+    DRIVER.close()
 
 
 if __name__ == '__main__':
@@ -247,7 +248,8 @@ if __name__ == '__main__':
                     command, setvar = command.split("=")
                 if command == "exit" or command == "quit" or command == "bye":
                     print("bye")
-                    DRIVER.close()
+                    if DRIVER is not None:
+                        DRIVER.close()
                     break
                 check_command(command, setvar)
         except KeyboardInterrupt:
