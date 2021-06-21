@@ -4,3 +4,4 @@ geckodriver
 venv
 .idea
 cached_sites
+firefox_profile
