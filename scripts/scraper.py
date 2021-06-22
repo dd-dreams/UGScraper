@@ -142,6 +142,7 @@ class Scraper:
 
     def print_songs(self):
         songs = " " * 6
+        self.remove_payed()  # just to be sure
         for index, song in enumerate(self.songs):
             songs += colored(f"[{index}] ", 'yellow') + colored(f"{song[1]}, {song[2]}, {song[3]}\n", 'red')
             songs += " " * 6
