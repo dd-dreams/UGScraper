@@ -1,4 +1,3 @@
-Add an argument for specificing geckodriver
 Add an option for only specifying artist, and get all his songs
 Add an option for only specifying song
-
+Add a feature to download directly geckodriver, and handle firefox errors (like firefox not installed)
