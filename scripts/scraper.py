@@ -3,8 +3,8 @@
 from termcolor import colored
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options, FirefoxProfile
+from selenium.common.exceptions import WebDriverException
 import os
-
 
 CLASS = "class"
 GET_HTML_COMMAND = "return document.documentElement.outerHTML"
@@ -12,7 +12,6 @@ SEARCH_URL = "https://www.ultimate-guitar.com/search.php?search_type=title&value
 CACHED_SITES = "/../cached_sites/"
 FIREFOX_PROFILE = "../firefox_profile"
 DRIVER = None
-
 
 # class names
 ALL_SONGS_CLASS = "_3uKbA"
@@ -22,7 +21,7 @@ CHORDS_CLASS = "_3cXAr _1G5k-"
 TYPE_CLASS = "_2amQf _2Fdo4"
 
 
-def get_html(url):
+def get_html(url, driver_location=None):
     global DRIVER
 
     # using selenium to run javascript scripts
@@ -33,7 +32,15 @@ def get_html(url):
         profile = FirefoxProfile()
     options.headless = True
     if DRIVER is None:
-        DRIVER = webdriver.Firefox(options=options, firefox_profile=profile)
+        try:
+            if driver_location is None:
+                DRIVER = webdriver.Firefox(options=options, firefox_profile=profile)
+            else:
+                DRIVER = webdriver.Firefox(executable_path=driver_location[1:-1], options=options,  # excluding ""
+                                           firefox_profile=profile)
+        except WebDriverException:
+            return False
+
     DRIVER.get(url)
     source_code = DRIVER.execute_script(GET_HTML_COMMAND)
     return source_code
@@ -76,14 +83,14 @@ class Scraper:
     # TODO add pro option
     def remove_payed(self):
         """
-        this method will remove the offical and payed tabs
+        this method will remove the official and payed tabs
 
         :return: None
         """
         for song in self.songs:
             # removing payed tabs
             text = song[3].lower()
-            if "pro" == text or "offical" == text or "guitar pro" == text:
+            if "pro" == text or "official" == text or "guitar pro" == text:
                 self.songs.remove(song)
 
     def order_elements(self):
@@ -115,7 +122,7 @@ class Scraper:
 
         self.__elements = ordered
 
-    def oragnize_songs(self):
+    def organize_songs(self):
         """
 
         :return: all songs
@@ -157,7 +164,7 @@ def main(scraper):
     """
     scraper.find_elements(ALL_SONGS_CLASS, CLASS)
     scraper.order_elements()
-    scraper.oragnize_songs()
+    scraper.organize_songs()
     scraper.remove_payed()
     songs = scraper.get_songs()
     if len(songs) == 0:

@@ -23,7 +23,7 @@ To start scraping you need to run cli.py, which interacts with the scraper.py.
 Here is the help message when running `python cli.py --help`:
 
 ```
-usage: cli.py [-h] [-s] [-S SONG] [-a ARTIST] [-o]
+usage: cli.py [-h] [-s] [-S SONG] [-a ARTIST] [-o] [--geckodriver GECKODRIVER]
 
 Scrape Ultimate Guitar website with no tracking, fast and easy, and lightweight. You can use the shell provided with the program, or parse arguments and get instant
 results. Enjoy!
@@ -35,17 +35,22 @@ optional arguments:
   -a ARTIST, --artist ARTIST
                         Provide artist
   -o, --open            Open HTML file in browser after scraped
+  --geckodriver GECKODRIVER
+                        Specify geckodriver
+
 ```
 
 `-s/--shell` is specifying if you want to use the shell provided with the program,
 
 or just pass args.
 
-`-S/--song` is for specifiying which song you want to search for (only when shell=False). 
+`-S/--song` is for specifying which song you want to search for (only when shell=False). 
 
 `-a/--artist` same as `-S` only for artist.
 
 `-o/--open` is for opening the HTML file after being scraped and output.
+
+`--geckodriver` is for specifying location of the geckodriver if have not been found
 
 ### Shell = TRUE
 

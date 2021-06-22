@@ -40,6 +40,7 @@ output, output the chords
 bye/exit/quit, exits the program
 open, opens the HTML file after being scraped
 """
+NO_GECKODRIVER_ERROR = "No geckodriver was found. Specify he's location by using --geckodriver"
 
 # commands
 OPTIONS = "options"
@@ -49,6 +50,8 @@ HELP = "help"
 SCRAPE = "scrape"
 OUTPUT = "output"
 OPEN = "open"
+GECKODRIVER = "geckodriver"
+GECKODRIVER_LOCATION = None
 
 LINK = None
 
@@ -114,7 +117,7 @@ def check_in_cache(name):
     return os.path.isfile(file)
 
 
-def scrape_command():
+def scrape_command(geckodriver_location):
     """
     this func will be executed when the user chose to scrape the site
     meaning if he want to get the search results by specifying
@@ -133,7 +136,10 @@ def scrape_command():
         return False
     url = SEARCH_URL + SONG + ' ' + ARTIST  # constructing the html, which get the search-results
     print_status(FETCHING_RESULTS)
-    source = get_html(url)  # receiving the html source code
+    source = get_html(url, geckodriver_location)  # receiving the html source code
+    if source is False:
+        print_status(NO_GECKODRIVER_ERROR, "red")
+        return False
     scraper = Scraper(BeautifulSoup(source, "lxml"), ALL_SONGS_CLASS, RATING_CLASS_NAME, LINK_NAME_CLASS,
                       TYPE_CLASS, ARTIST, SONG)
     found = main(scraper)  # scraping, returns if songs have been found or not
@@ -148,13 +154,14 @@ def scrape_command():
     return link
 
 
-def output_command(link, name):
+def output_command(link, name, geckodriver_location):
     """
     this func will be executed when the user wants to output the chords,
     after choosing a song
 
     :param link: which song (link) to scrape
     :param name: what is the name of the song
+    :param geckodriver_location: location for geckodriver (if specified)
     :return:
     """
     if link is None:
@@ -164,7 +171,9 @@ def output_command(link, name):
         return False
     else:
         print_status(OUTPUTING_MSG)
-        source = get_html(link)
+        source = get_html(link, geckodriver_location)
+        if source is False:
+            print_status(NO_GECKODRIVER_ERROR, "red")
         chords = Chords(BeautifulSoup(source, "lxml"), CHORDS_CLASS, name)
         chords.output_chords()
         print_status(SUCCESS_CHORDS)
@@ -180,16 +189,17 @@ def get_path_current_song():
     return path
 
 
-def check_command(comm, whatset=None):
+def check_command(comm, geckodriver_location, whatset=None):
     """
     this func will check the command input
 
     :param comm: the command
     :param whatset: if the user chose a command to set some variable, this is what to set for
+    :param geckodriver_location: location for geckodriver
     :return:
     """
-    global LINK, SONG
-
+    global LINK, SONG, GECKODRIVER_LOCATION
+    print(comm)
     if comm == OPTIONS:
         print_options()
     elif comm == CLEAR:
@@ -201,30 +211,33 @@ def check_command(comm, whatset=None):
     elif comm == "artist":
         set_artist_song(artist=whatset)
     elif comm == SCRAPE:
-        LINK = scrape_command()
+        LINK = scrape_command(geckodriver_location)
     elif comm == OUTPUT:
-        output_command(LINK, SONG)
+        output_command(LINK, SONG, geckodriver_location)
     elif comm == OPEN:
         path = get_path_current_song()
         open_command(path)
+    elif comm == GECKODRIVER:
+        GECKODRIVER_LOCATION = whatset
     else:
         print_status("Wrong input", ERROR_COLOR)
 
 
-def using_args(song, artist):
+def using_args(song, artist, geckodriver_location):
     """
 
     :param song: song provided with an argument
     :param artist: artist provided with an argument
+    :param geckodriver_location: location for geckodriver
     :return:
     """
     if song is None or artist is None:
         print_status("No song or artist provided", ERROR_COLOR)
         sys.exit(0)
     set_artist_song(song, artist)
-    link = scrape_command()
+    link = scrape_command(geckodriver_location)
     if link:
-        output_command(link, song)
+        output_command(link, song, geckodriver_location)
     else:
         return
     DRIVER.close()
@@ -239,23 +252,26 @@ if __name__ == '__main__':
     parser.add_argument('-S', '--song', help="Provide song")
     parser.add_argument('-a', '--artist', help="Provide artist")
     parser.add_argument('-o', '--open', help="Open HTML file in browser after scraped", action="store_true")
+    parser.add_argument("--geckodriver", help="Specify geckodriver")
     args = parser.parse_args()
+    GECKODRIVER_LOCATION = args.geckodriver
     if args.shell:
         try:
             while True:
-                command = input(HOLDER).lower()
+                command = input(HOLDER)
                 if '=' in command:
                     command, setvar = command.split("=")
+                    command = command.lower()
                 if command == "exit" or command == "quit" or command == "bye":
                     print("bye")
                     if DRIVER is not None:
                         DRIVER.close()
                     break
-                check_command(command, setvar)
+                check_command(command, GECKODRIVER_LOCATION, setvar)
         except KeyboardInterrupt:
             print("\nbye")
     else:
-        using_args(args.song, args.artist)
+        using_args(args.song, args.artist, args.geckodriver)
         if args.open:
             path = get_path_current_song()
             open_command(path)
