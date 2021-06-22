@@ -199,7 +199,7 @@ def check_command(comm, geckodriver_location, whatset=None):
     :return:
     """
     global LINK, SONG, GECKODRIVER_LOCATION
-    print(comm)
+
     if comm == OPTIONS:
         print_options()
     elif comm == CLEAR:
@@ -217,8 +217,6 @@ def check_command(comm, geckodriver_location, whatset=None):
     elif comm == OPEN:
         path = get_path_current_song()
         open_command(path)
-    elif comm == GECKODRIVER:
-        GECKODRIVER_LOCATION = whatset
     else:
         print_status("Wrong input", ERROR_COLOR)
 

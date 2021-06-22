@@ -36,7 +36,9 @@ def get_html(url, driver_location=None):
             if driver_location is None:
                 DRIVER = webdriver.Firefox(options=options, firefox_profile=profile)
             else:
-                DRIVER = webdriver.Firefox(executable_path=driver_location[1:-1], options=options,  # excluding ""
+                if '"' in driver_location:
+                    driver_location = driver_location[1:-1]  # excluding ""
+                DRIVER = webdriver.Firefox(executable_path=driver_location, options=options,
                                            firefox_profile=profile)
         except WebDriverException:
             return False
