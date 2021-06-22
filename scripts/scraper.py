@@ -48,6 +48,10 @@ def get_html(url, driver_location=None):
     return source_code
 
 
+def get_driver():
+    return DRIVER
+
+
 class Scraper:
     def __init__(self, soup, song_class, rating_class, link_class, type_class, artist, song):
         self.__soup = soup

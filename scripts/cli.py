@@ -22,9 +22,9 @@ FETCHING_RESULTS = "Fetching results"
 NO_SONG_SET = "No song to search"
 NO_ARTIST_SET = "No specified artist"
 SUCCESS_SCRAPE = "Successfully scraped"
-SUCCESS_CHORDS = "Successfully outputed chords"
+SUCCESS_CHORDS = "Successfully output chords"
 ALREADY_SCRAPED = "You already scraped this song. Check in cached_sites folder."
-OUTPUTING_MSG = "Outputing chords"
+OUTPUTTING_MSG = "Outputting chords"
 FILE_NOT_EXIST = "You didn't scrape or output, try again after you did."
 DESCRIPTION = """
 Scrape Ultimate Guitar website with no tracking, fast and easy, and lightweight.
@@ -32,8 +32,8 @@ You can use the shell provided with the program, or parse arguments and get inst
 Enjoy!
 
 """
-HELP_MSG = """song=, specifiy song
-artist=, specifiy artist
+HELP_MSG = """song=, specify song
+artist=, specify artist
 scrape, scrape the website
 options, show current options
 output, output the chords
@@ -117,12 +117,14 @@ def check_in_cache(name):
     return os.path.isfile(file)
 
 
-def scrape_command(geckodriver_location):
+def scrape_command(geckodriver_location, continue_=False):
     """
     this func will be executed when the user chose to scrape the site
     meaning if he want to get the search results by specifying
     song and artist.
 
+    :param geckodriver_location:
+    :param continue_: continue even if the song in cache
     :return: if the was an error
     """
     if SONG is None:
@@ -170,7 +172,7 @@ def output_command(link, name, geckodriver_location):
         print_status(ALREADY_SCRAPED, ERROR_COLOR)
         return False
     else:
-        print_status(OUTPUTING_MSG)
+        print_status(OUTPUTTING_MSG)
         source = get_html(link, geckodriver_location)
         if source is False:
             print_status(NO_GECKODRIVER_ERROR, "red")
@@ -238,7 +240,7 @@ def using_args(song, artist, geckodriver_location):
         output_command(link, song, geckodriver_location)
     else:
         return
-    DRIVER.close()
+    get_driver().close()
 
 
 if __name__ == '__main__':
