@@ -54,7 +54,7 @@ or just pass args.
 
 ### Shell = TRUE
 
-When shell = True (specified `--shell`), a "holder" will appear for you:
+When `shell=True` (specified `--shell`), a "holder" will appear for you:
 
 ![holder.png](assets/holder.png)
 
@@ -71,15 +71,10 @@ When typing `help`, you will get a list of the current supported commands:
 ---
 
 The program is running with Selenium to get the source code of the site, since I need javascript to be rendered.
-
 Beautifulsoup is used for scraping.
-
 The program is a bit heavy, that's why it can take some time to scrape.
-
 So to solve it with the easy way, I did that everytime you search a song and scrape it, the chords will be cached in a folder.
-
 Also, I added a folder which has in it a firefox profile. It uses uBlock origin to block javascript and other requests, which without it- it takes much longer to scrape since there is so many requests.
-
 On some computers if you run it multiple times, selenium can complain and say "No space left on device", since for some reason- the RAM is getting full :/.
 
 # WARNING!!
