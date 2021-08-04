@@ -64,9 +64,9 @@ def clear_command():
 def open_command(path, browser=None):
     if os.path.isfile(path):
         if browser is None:
-            subprocess.call(["bash", "utils/open_chrome.sh", path])
+            subprocess.call(["bash", "utils/open_browser.sh", path])
         else:  # if open actually opened nothing, that means user didn't specify correctly the name of the browser
-            subprocess.call(["bash", "utils/open_chrome.sh", path, browser])
+            subprocess.call(["bash", "utils/open_browser.sh", path, browser])
     else:
         print_status(FILE_NOT_EXIST, ERROR_COLOR)
 
