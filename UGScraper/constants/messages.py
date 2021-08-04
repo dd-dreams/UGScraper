@@ -24,4 +24,4 @@ output, output the chords
 bye/exit/quit, exits the program
 open, opens the HTML file after being scraped
 """
-NO_GECKODRIVER_ERROR = "No geckodriver was found. Specify he's location by using --geckodriver"
+NO_CHROMEDRIVER_ERROR = "No chromedriver was found. Specify his location by using --chromedriver"

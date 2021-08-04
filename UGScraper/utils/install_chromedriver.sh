@@ -30,4 +30,3 @@ fi
 # extracting
 7z e -bso0 chromedriver.zip
 rm chromedriver.zip
-mv chromedriver ../

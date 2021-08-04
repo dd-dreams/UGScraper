@@ -12,6 +12,8 @@ Ultimate Guitar Scraper is an MIT licensed project, which scrapes the site accor
 
 - Search by artist
 
+- 
+
 ## Manual
 
 ---
@@ -23,10 +25,10 @@ To start scraping you need to run cli.py, which interacts with the scraper.py.
 Here is the help message when running `python cli.py --help`:
 
 ```
-usage: cli.py [-h] [-s] [-S SONG] [-a ARTIST] [-o] [--geckodriver GECKODRIVER]
+usage: cli.py [-h] [-s] [-S SONG] [-a ARTIST] [-o] [--webdriver WEBDRIVER] [-b BROWSER]
 
-Scrape Ultimate Guitar website with no tracking, fast and easy, and lightweight. You can use the shell provided with the program, or parse arguments and get instant
-results. Enjoy!
+Scrape Ultimate Guitar website with no tracking (less at least), fast and easy, and lightweight. You can use the
+shell provided with the program, or parse arguments and get instant results. Enjoy!
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -35,9 +37,10 @@ optional arguments:
   -a ARTIST, --artist ARTIST
                         Provide artist
   -o, --open            Open HTML file in browser after scraped
-  --geckodriver GECKODRIVER
-                        Specify geckodriver
-
+  --webdriver WEBDRIVER
+                        Specify webdriver
+  -b BROWSER, --browser BROWSER
+                        Specify browser (default is Chrome)
 ```
 
 `-s/--shell` is specifying if you want to use the shell provided with the program,
@@ -50,7 +53,7 @@ or just pass args.
 
 `-o/--open` is for opening the HTML file after being scraped and output.
 
-`--geckodriver` is for specifying location of the geckodriver if have not been found
+`--webdriver` is for specifying location of the webdriver if you don't want to download another one
 
 ### Shell = TRUE
 

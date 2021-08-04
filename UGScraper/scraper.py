@@ -2,16 +2,14 @@
 
 from termcolor import colored
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options, FirefoxProfile
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
 import os
 from constants.html_classes import *
+from constants.other import CACHED_SITES
 
-CLASS = "class"
 GET_HTML_COMMAND = "return document.documentElement.outerHTML"
 SEARCH_URL = "https://www.ultimate-guitar.com/search.php?search_type=title&value="
-CACHED_SITES = "/../cached_sites/"
-FIREFOX_PROFILE = "../firefox_profile"
 DRIVER = None
 
 
@@ -20,21 +18,17 @@ def get_html(url, driver_location=None):
 
     # using selenium to run javascript scripts
     options = Options()
-    if os.path.exists(f"{os.getcwd()}/{FIREFOX_PROFILE}"):  # checking if firefox_profile exists
-        profile = FirefoxProfile(profile_directory=FIREFOX_PROFILE)
-    else:
-        profile = FirefoxProfile()
     options.headless = True
+    options.add_argument("--incognito")  # even tho selenium creates a brand new profile, we want to be sure
     if DRIVER is None:
         try:
-            if driver_location is None:
-                DRIVER = webdriver.Firefox(options=options, firefox_profile=profile)
+            if driver_location is None:  # if user didn't specify a webdriver, we will try to use one in path if have
+                DRIVER = webdriver.Chrome(options=options)
             else:
                 if '"' in driver_location:
-                    driver_location = driver_location[1:-1]  # excluding ""
-                DRIVER = webdriver.Firefox(executable_path=driver_location, options=options,
-                                           firefox_profile=profile)
-        except WebDriverException:
+                    driver_location = driver_location.replace('"', "")  # excluding ""
+                DRIVER = webdriver.Chrome(executable_path=driver_location, options=options)
+        except WebDriverException:  # if webdriver is not in path, it will throw an exception
             return False
 
     DRIVER.get(url)
@@ -150,7 +144,7 @@ class Chords:
         self.name = name + ".html"
 
     def output_chords(self):
-        path = os.getcwd() + CACHED_SITES
+        path = CACHED_SITES
         if not os.path.exists(path):
             os.makedirs(path)
         chords = self.__soup.find("section", class_=CHORDS_CLASS)

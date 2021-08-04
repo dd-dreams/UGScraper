@@ -6,3 +6,5 @@ venv
 cached_sites
 firefox_profile
 *.pyc
+UPDATE.txt
+chromedriver
