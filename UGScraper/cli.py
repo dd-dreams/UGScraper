@@ -82,7 +82,7 @@ def set_artist_song(song=None, artist=None):
 def choose_song(scraper):
     print(scraper.print_songs())
     chosen = int(input("Choose song: "))
-    return chosen
+    return chosen - 1
 
 
 def check_in_cache(name):
@@ -124,9 +124,10 @@ def scrape_command(chromedriver_location):
     else:
         print_status(SONGS_FOUND)
     chosen = choose_song(scraper)  # if there is multiple versions
-    link = scraper.get_songs()[chosen][0]  # get the song version, and his Beautifulsoup object
+    link = scraper.get_songs()[chosen][0]  # get the link
+    name = scraper.get_song_name(chosen)
     print_status(SUCCESS_SCRAPE)
-    return link
+    return link, name
 
 
 def output_command(link, name, chromedriver_location):
@@ -149,7 +150,7 @@ def output_command(link, name, chromedriver_location):
         source = get_html(link, chromedriver_location)
         if source is False:
             print_status(NO_CHROMEDRIVER_ERROR, "red")
-        chords = Chords(BeautifulSoup(source, "lxml"), CHORDS_CLASS, name)
+        chords = Chords(BeautifulSoup(source, "lxml"), CHORDS_CLASS, name, ARTIST)
         chords.output_chords()
         print_status(SUCCESS_CHORDS)
 
@@ -173,7 +174,8 @@ def check_command(comm, chromedriver_location, whatset=None):
     :param chromedriver_location: location for chromedriver
     :return:
     """
-    global LINK, SONG
+    global LINK
+    name = None  # final song name
 
     if comm == OPTIONS:
         print_options()
@@ -186,9 +188,9 @@ def check_command(comm, chromedriver_location, whatset=None):
     elif comm == "artist":
         set_artist_song(artist=whatset)
     elif comm == SCRAPE:
-        LINK = scrape_command(chromedriver_location)
+        LINK, name = scrape_command(chromedriver_location)
     elif comm == OUTPUT:
-        output_command(LINK, SONG, chromedriver_location)
+        output_command(LINK, name, chromedriver_location)
     elif comm == OPEN:
         path = get_path_current_song()
         open_command(path)
@@ -205,16 +207,16 @@ def using_args(song, artist, chromedriver_location):
     :return:
     """
     if song is None or artist is None:
-        print_status("No song or artist provided", ERROR_COLOR)
+        print_status(NO_SONG_OR_ARTIST, ERROR_COLOR)
         sys.exit(0)
     set_artist_song(song, artist)
     if chromedriver_location is None:
         chromedriver_location = os.getcwd() + '/' + CHROMEDRIVER_LOCATION
     link = scrape_command(chromedriver_location)
-    if link:
-        output_command(link, song, chromedriver_location)
-    else:
-        return
+    if type(link) is tuple:
+        name = link[1]
+        link = link[0]
+        output_command(link, name, chromedriver_location)
     get_driver().close()
 
 
@@ -224,7 +226,6 @@ def install_chromedriver():
 
 if __name__ == '__main__':
     init()  # sometimes the colors do not appear good on some platforms, init() fix it
-    command = ""
     value = None
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-s', '--shell', help="Spawn a shell", action="store_true")
@@ -234,6 +235,11 @@ if __name__ == '__main__':
     parser.add_argument('--webdriver', help="Specify webdriver")
     parser.add_argument('-b', '--browser', help="Specify browser (default is Chrome)")
     args = parser.parse_args()
+
+    # if no args supplied, display help message
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(0)
 
     # check if chromedriver exists
     if not os.path.exists(CHROMEDRIVER) and args.webdriver is None:
@@ -254,6 +260,8 @@ if __name__ == '__main__':
                     break
                 check_command(command, os.getcwd() + '/' + CHROMEDRIVER_LOCATION, value)
         except KeyboardInterrupt:
+            if DRIVER is not None:
+                DRIVER.close()
             print("\nbye")
     else:
         using_args(args.song, args.artist, args.webdriver)

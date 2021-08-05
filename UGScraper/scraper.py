@@ -88,6 +88,10 @@ class Scraper:
             if "pro" == text or "official" == text or "guitar pro" == text:
                 self.songs.remove(song)
 
+    @staticmethod
+    def get_rate(elem):
+        return elem[1]
+
     def order_elements(self):
         """
         ordering elements by rating, highest to lowest
@@ -96,8 +100,6 @@ class Scraper:
         """
         ordered = []
 
-        def get_rate(elem):
-            return elem[1]
 
         for element in self.__elements:
             rate = element.find("div", class_=self.rating_class)  # getting the rating number
@@ -113,7 +115,7 @@ class Scraper:
                 continue
             ordered.append((element, int(rate)))
             if len(ordered) > 1:
-                ordered = sorted(ordered, key=get_rate, reverse=True)
+                ordered = sorted(ordered, key=self.get_rate, reverse=True)
 
         self.__elements = ordered
 
@@ -126,23 +128,33 @@ class Scraper:
         for song in self.__elements:
             link = song[0].find("a", class_=self.link_class, href=True)
             type_ = song[0].find("div", class_=self.type_class).text
-            self.songs.append([link['href'], link.text, song[1], type_])  # [link, name, rate, type]
+            self.songs.append([link['href'], f"{link.text}_{song[1]}", song[1], type_])  # [link, name, rate, type]
         return self.songs
 
     def print_songs(self):
         songs = " " * 6
         self.remove_payed()  # just to be sure
         for index, song in enumerate(self.songs):
-            songs += colored(f"[{index}] ", 'yellow') + colored(f"{song[1]}, {song[2]}, {song[3]}\n", 'red')
+            songs += colored(f"[{index + 1}] ", 'yellow') + colored(f"{song[1].split('_')[0]}"
+                                                                    f", {song[2]}, {song[3]}\n", 'red')
             songs += " " * 6
         return songs
 
+    def get_song_name(self, index):
+        """
+        returns the song name by index
+
+        :return: name
+        """
+        return self.songs[index][1]
+
 
 class Chords:
-    def __init__(self, soup, chords_class, name):
+    def __init__(self, soup, chords_class, name, artist):
         self.__soup = soup
         self.chords_class = chords_class
-        self.name = name + ".html"
+        self.artist = artist
+        self.name = name + '_' + self.artist + ".html"
 
     @staticmethod
     def add_basic_html(file, start_or_end):
