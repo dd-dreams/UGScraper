@@ -71,6 +71,12 @@ When typing `help`, you will get a list of the current supported commands:
 
 **ATTENTION**: Currently you must specify song and artist, otherwise you get errors.
 
+# Example
+
+---
+![example.gif](assets/example.gif)
+
+
 # Docs
 
 ---
@@ -93,3 +99,4 @@ I'm **<mark>not</mark>** responsible for **<mark>any</mark>** potential bad use 
 ---
 
 Currently, no contact service.
+
