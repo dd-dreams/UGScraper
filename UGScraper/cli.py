@@ -209,7 +209,6 @@ def using_args(song, artist, chromedriver_location):
         sys.exit(0)
     set_artist_song(song, artist)
     if chromedriver_location is None:
-
         chromedriver_location = os.getcwd() + '/' + CHROMEDRIVER_LOCATION
     link = scrape_command(chromedriver_location)
     if link:
@@ -237,7 +236,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # check if chromedriver exists
-    if not os.path.exists(CHROMEDRIVER) and args.webdriver is not None:
+    if not os.path.exists(CHROMEDRIVER) and args.webdriver is None:
+        print_status(INSTALLING_CHROMEDRIVER)
         install_chromedriver()
 
     if args.shell:
@@ -252,7 +252,7 @@ if __name__ == '__main__':
                     if DRIVER is not None:
                         DRIVER.close()
                     break
-                check_command(command, CHROMEDRIVER_LOCATION, value)
+                check_command(command, os.getcwd() + '/' + CHROMEDRIVER_LOCATION, value)
         except KeyboardInterrupt:
             print("\nbye")
     else:
