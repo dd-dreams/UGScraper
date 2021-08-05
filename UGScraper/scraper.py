@@ -153,8 +153,8 @@ class Chords:
     def __init__(self, soup, chords_class, name, artist):
         self.__soup = soup
         self.chords_class = chords_class
-        self.artist = artist
-        self.name = name + '_' + self.artist + ".html"
+        self.name = (name.replace(' ', '+') + ".html").replace('"', '')
+        self.artist = artist.replace('"', '')
 
     @staticmethod
     def add_basic_html(file, start_or_end):

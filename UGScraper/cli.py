@@ -106,9 +106,6 @@ def scrape_command(chromedriver_location):
     if ARTIST is None:
         print_status(NO_ARTIST_SET, ERROR_COLOR)
         return False
-    if check_in_cache(SONG):
-        print_status(ALREADY_SCRAPED, ERROR_COLOR)
-        return False
     url = SEARCH_URL + SONG + ' ' + ARTIST  # constructing the html, which get the search-results
     print_status(FETCHING_RESULTS)
     source = get_html(url, chromedriver_location)  # receiving the html source code
@@ -126,6 +123,9 @@ def scrape_command(chromedriver_location):
     chosen = choose_song(scraper)  # if there is multiple versions
     link = scraper.get_songs()[chosen][0]  # get the link
     name = scraper.get_song_name(chosen)
+    if check_in_cache(name):
+        print_status(ALREADY_SCRAPED, ERROR_COLOR)
+        return False
     print_status(SUCCESS_SCRAPE)
     return link, name
 
@@ -155,17 +155,19 @@ def output_command(link, name, chromedriver_location):
         print_status(SUCCESS_CHORDS)
 
 
-def get_path_current_song():
+def get_path_current_song(name):
     """
     this is a function to get the current path of the current song
 
     :return: path
     """
-    path = f"{CACHED_SITES}/{SONG}.html"
+    if name is None:
+        name = SONG
+    path = f"{os.getcwd()}/{CACHED_SITES}/{name}.html"
     return path
 
 
-def check_command(comm, chromedriver_location, whatset=None):
+def check_command(comm, chromedriver_location, artist, name=None, link=None, whatset=None):
     """
     this func will check the command input
 
@@ -174,9 +176,6 @@ def check_command(comm, chromedriver_location, whatset=None):
     :param chromedriver_location: location for chromedriver
     :return:
     """
-    global LINK
-    name = None  # final song name
-
     if comm == OPTIONS:
         print_options()
     elif comm == CLEAR:
@@ -188,14 +187,18 @@ def check_command(comm, chromedriver_location, whatset=None):
     elif comm == "artist":
         set_artist_song(artist=whatset)
     elif comm == SCRAPE:
-        LINK, name = scrape_command(chromedriver_location)
+        link = scrape_command(chromedriver_location)
+        name = link[1]
+        name += ('_' + artist).replace(' ', '_')  # look line 157 at scraper.py
+        link = link[0]
     elif comm == OUTPUT:
-        output_command(LINK, name, chromedriver_location)
+        output_command(link, name, chromedriver_location)
     elif comm == OPEN:
-        path = get_path_current_song()
+        path = get_path_current_song(name)
         open_command(path)
     else:
         print_status("Wrong input", ERROR_COLOR)
+    return name, link
 
 
 def using_args(song, artist, chromedriver_location):
@@ -204,8 +207,10 @@ def using_args(song, artist, chromedriver_location):
     :param song: song provided with an argument
     :param artist: artist provided with an argument
     :param chromedriver_location: location for chromedriver
-    :return:
+    :return: name if has one
     """
+
+    name = None
     if song is None or artist is None:
         print_status(NO_SONG_OR_ARTIST, ERROR_COLOR)
         sys.exit(0)
@@ -215,9 +220,11 @@ def using_args(song, artist, chromedriver_location):
     link = scrape_command(chromedriver_location)
     if type(link) is tuple:
         name = link[1]
+        name += ('_' + artist).replace(' ', '_')  # look line 157 at scraper.py
         link = link[0]
         output_command(link, name, chromedriver_location)
     get_driver().close()
+    return name
 
 
 def install_chromedriver():
@@ -247,6 +254,8 @@ if __name__ == '__main__':
         install_chromedriver()
 
     if args.shell:
+        name_ = None
+        link_ = None
         try:
             while True:
                 command = input(HOLDER)
@@ -258,13 +267,17 @@ if __name__ == '__main__':
                     if DRIVER is not None:
                         DRIVER.close()
                     break
-                check_command(command, os.getcwd() + '/' + CHROMEDRIVER_LOCATION, value)
+                if name_ is not None and link_ is not None:
+                    name_ = name_.replace('"', '')
+                    link_ = link_.replace('"', '')
+                    check_command(command, os.getcwd() + '/' + CHROMEDRIVER_LOCATION, ARTIST, name_, link_, value)
+                else:
+                    name_, link_ = check_command(command, os.getcwd() + '/' + CHROMEDRIVER_LOCATION, ARTIST, whatset=value)
         except KeyboardInterrupt:
             if DRIVER is not None:
                 DRIVER.close()
             print("\nbye")
     else:
-        using_args(args.song, args.artist, args.webdriver)
         if args.open:  # if the user wants to open the chords html after the scrape
-            path = get_path_current_song()
+            path = get_path_current_song(using_args(args.song, args.artist, args.webdriver))
             open_command(path)
