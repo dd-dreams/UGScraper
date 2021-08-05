@@ -25,3 +25,4 @@ bye/exit/quit, exits the program
 open, opens the HTML file after being scraped
 """
 NO_CHROMEDRIVER_ERROR = "No chromedriver was found. Specify his location by using --chromedriver"
+INSTALLING_CHROMEDRIVER = "Installing chromedriver..."

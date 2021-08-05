@@ -12,7 +12,9 @@ Ultimate Guitar Scraper is an MIT licensed project, which scrapes the site accor
 
 - Search by artist
 
-- 
+- Autoscroll 
+
+- Centered chords
 
 ## Manual
 

@@ -7,6 +7,7 @@ from selenium.common.exceptions import WebDriverException
 import os
 from constants.html_classes import *
 from constants.other import CACHED_SITES
+import modify_html
 
 GET_HTML_COMMAND = "return document.documentElement.outerHTML"
 SEARCH_URL = "https://www.ultimate-guitar.com/search.php?search_type=title&value="
@@ -70,7 +71,7 @@ class Scraper:
         :return: all elements found with name (element)
         """
 
-        if type_element == 'class':
+        if type_element == CLASS:
             self.__elements = self.__soup.find_all("div", class_=element)
         return self.__elements
 
@@ -143,13 +144,34 @@ class Chords:
         self.chords_class = chords_class
         self.name = name + ".html"
 
+    @staticmethod
+    def add_basic_html(file, start_or_end):
+        """
+        function for adding some basic html tags to outputted html file
+
+        :param file: file object
+        :param start_or_end:
+
+        :return:
+        """
+        if start_or_end:
+            modify_html.add_basic(file, start_or_end)
+            modify_html.center_smooth_html(file, start_or_end)
+        else:
+            modify_html.center_smooth_html(file, start_or_end)
+            modify_html.add_basic(file, start_or_end)
+
     def output_chords(self):
-        path = CACHED_SITES
-        if not os.path.exists(path):
-            os.makedirs(path)
+        if not os.path.exists(CACHED_SITES):
+            os.makedirs(CACHED_SITES)
         chords = self.__soup.find("section", class_=CHORDS_CLASS)
-        with open(os.path.join(path, self.name), "w") as chords_html:
-            chords_html.write(str(chords))
+        chords_html = open(os.path.join(CACHED_SITES, self.name), "w")
+        self.add_basic_html(chords_html, True)
+        modify_html.add_button(chords_html)
+        chords_html.write(str(chords))
+        modify_html.add_autoscroll(chords_html)
+        self.add_basic_html(chords_html, False)
+
 
 
 def main(scraper):
