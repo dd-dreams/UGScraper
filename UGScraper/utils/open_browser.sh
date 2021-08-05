@@ -1,19 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 
 # ARGUMENTS: 1=path, 2=browser
 
-# there is os's which uses different names for google-chrome
 
-CHROME="$(command -v google-chrome-stable | wc -c)"
+# checking if specified browser
 
-if [ $# -gt 1 ]; then
-  exec $2 $1 &> /dev/null &
-  exit
-fi
 
-if [ $CHROME != "0" ]; then
-    exec google-chrome-stable --incognito $1 &> /dev/null &
-else
-    exec google-chrome --incognito $1 &> /dev/null &
-fi
+[ $# -gt 1 ] && $($2 $1 &> /dev/null &) && exit
+
+# you gotta make sure you set BROWSER env variable to your preferred browser (can be any one)
+[ $# = 1 ] && $BROWSER $1 --incognito &> /dev/null &
 
