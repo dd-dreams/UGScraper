@@ -5,6 +5,7 @@
 
 # checking if specified browser
 
+echo $1
 
 [ $# -gt 1 ] && $($2 $1 &> /dev/null &) && exit
 

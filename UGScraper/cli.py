@@ -172,8 +172,11 @@ def check_command(comm, chromedriver_location, artist, name=None, link=None, wha
     this func will check the command input
 
     :param comm: the command
-    :param whatset: if the user chose a command to set some variable, this is what to set for
     :param chromedriver_location: location for chromedriver
+    :param artist:
+    :param name:
+    :param link:
+    :param whatset: if the user chose a command to set some variable, this is what to set for
     :return:
     """
     if comm == OPTIONS:
@@ -220,7 +223,7 @@ def using_args(song, artist, chromedriver_location):
     link = scrape_command(chromedriver_location)
     if type(link) is tuple:
         name = link[1]
-        name += ('_' + artist).replace(' ', '_')  # look line 157 at scraper.py
+        name += ('_' + artist).replace(' ', '_')  # look line 156 at scraper.py
         link = link[0]
         output_command(link, name, chromedriver_location)
     get_driver().close()

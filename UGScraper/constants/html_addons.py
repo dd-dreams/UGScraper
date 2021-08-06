@@ -8,7 +8,7 @@ like centering the text and so on
 HTML_BASICS_START = """
 <!DOCTYPE html>
 <html>
-    <body>
+    <body onload="speed = 100;">
 """
 
 HTML_BASICS_END = """
@@ -36,14 +36,21 @@ AUTO_SCROLL_BUTTON = """
 
 AUTO_SCROLL_SCRIPT = """
 <script>
+document.addEventListener("keyup", function(event) {
+    if (event.key === '+' && speed != 0) {speed -= 100;}
+    else if (event.key === '-') {speed += 100;}
+});
 function scrollpage() {
-    var Height=document.documentElement.scrollHeight;
-    var i=1;
+    var i = 0;
+    var page_len = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     function scroll() {
+        currentPosition = document.documentElement.scrollTop;
+        if (i < currentPosition || i > currentPosition) { i = currentPosition; }
+        i += 5;
+        i = Math.round(i);
         window.scrollTo(0,i);
-        i=i+40;
-        if(i>=Height){  return; }
-        setTimeout(scroll, 100);
+        if(i >= page_len){  return; }
+        setTimeout(scroll, speed);
     }scroll();
 }
 </script>
