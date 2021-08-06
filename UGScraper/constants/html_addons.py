@@ -47,7 +47,6 @@ function scrollpage() {
         currentPosition = document.documentElement.scrollTop;
         if (i < currentPosition || i > currentPosition) { i = currentPosition; }
         i += 5;
-        i = Math.round(i);
         window.scrollTo(0,i);
         if(i >= page_len){  return; }
         setTimeout(scroll, speed);

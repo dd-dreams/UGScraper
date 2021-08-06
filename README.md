@@ -1,5 +1,7 @@
 # **Ultimate Guitar Scraper**
 
+![Python-Version](https://img.shields.io/badge/Python-3.7-blue.svg)
+
 ---
 
 Ultimate Guitar Scraper is an MIT licensed project, which scrapes the site according to specifications, and get for you the chords.
@@ -20,11 +22,9 @@ Ultimate Guitar Scraper is an MIT licensed project, which scrapes the site accor
 
 ---
 
-You of-course need python, version>=3.7.
-
 To start scraping you need to run cli.py, which interacts with the scraper.py.
 
-Here is the help message when running `python cli.py --help`:
+Help message when running `python cli.py --help`:
 
 ```
 usage: cli.py [-h] [-s] [-S SONG] [-a ARTIST] [-o] [--webdriver WEBDRIVER] [-b BROWSER]
