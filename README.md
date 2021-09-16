@@ -3,6 +3,8 @@
 ![Python-Version](https://img.shields.io/badge/Python-3.7-blue.svg)
 
 ---
+THIS REPOSITORY WAS ARCHIVED! NEW SCRAPER WAS LAUNCHED AT: https://github.com/dd-dreams/BUGS
+
 
 Ultimate Guitar Scraper is an MIT licensed project, which scrapes the site according to specifications, and get for you the chords.
 
